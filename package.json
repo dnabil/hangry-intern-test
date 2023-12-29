@@ -1,0 +1,20 @@
+{
+  "name": "hangry-intern-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app/http/index.js",
+  "scripts": {
+    "start": "node src/app/http/index.js",
+    "dev": "nodemon src/app/http/index.js"
+  },
+  "keywords": [],
+  "author": "dnabil",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
+}

@@ -30,14 +30,86 @@ export async function createUser(req, res) {
 
   return helper.response(
     res,
-    200,
+    201,
     "user created!",
     new dto.UserRes(newUser.id, newUser.name, newUser.email, newUser.dob)
   );
 }
 
-export async function indexUser() {}
+export async function indexUser(req, res) {
+  let users = [];
+  localmem.users.forEach((element) => {
+    if (element === undefined) return;
+    users.push(
+      new dto.UserRes(element.id, element.name, element.email, element.dob)
+    );
+  });
 
-export async function destroyUser() {}
+  if (users.length == 0) {
+    return helper.response(res, 404, "no users data found :(", []);
+  }
 
-export async function updateUser() {}
+  return helper.response(res, 200, "found", users);
+}
+
+export async function destroyUser(req, res) {
+  let user = localmem.users[req.params.id];
+  if (user === undefined) {
+    return helper.response(res, 404, "user not found");
+  }
+  delete localmem.users[user.id];
+  return helper.response(res, 200, "user deleted");
+}
+
+export async function updateUser(req, res) {
+  let id = req.params.id;
+
+  let user = localmem.users[id];
+
+  if (user == undefined) {
+    return helper.response(res, 404, "user not found");
+  }
+
+  let updateReq;
+  try {
+    const bodyUnparsed = await helper.getBody(req);
+    updateReq = JSON.parse(bodyUnparsed, (key, value) =>
+      key === "" ? Object.assign(new dto.CreateUserReq(), value) : value
+    );
+  } catch (error) {
+    return helper.response(res, 400, "bad request, parse body data fail");
+  }
+
+  // validate data
+  try {
+    updateReq.validate();
+  } catch (error) {
+    return helper.response(res, 400, error.message);
+  }
+
+  // update
+  user.name = updateReq.name;
+  user.email = updateReq.email;
+  user.dob = updateReq.dob;
+
+  helper.response(
+    res,
+    200,
+    "user data updated",
+    new dto.UserRes(id, user.name, user.email, user.dob)
+  );
+}
+
+export async function getUserById(req, res) {
+  let user = localmem.users[req.params.id];
+  if (user === undefined) {
+    return helper.response(res, 404, "user not found");
+  }
+
+  return helper.response(
+    res,
+    200,
+    "user found",
+    new dto.UserRes(user.id, user.name, user.email, user.dob)
+  );
+}

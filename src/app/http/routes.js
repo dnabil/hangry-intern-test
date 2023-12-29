@@ -1,28 +1,25 @@
+import url from "url";
 import * as helper from "./helper.js";
 import * as controller from "./controller/index.js";
 
-export default function (req, res) {
-  switch (`${req.method} ${req.url}`) {
-    // ping route
-    case "GET /api":
-      (function (req, res) {
-        helper.response(res, 200, "api is up");
-      })(req, res);
-      break;
+const routes = {
+  "/ping": {
+    GET: (_req, res) => {
+      helper.response(res, 200, "api is up");
+    },
+  },
 
-    case "GET /users":
-      break;
-    case "POST /users":
-      controller.createUser(req, res);
-      break;
-    case "PUT /users":
-      break;
-    case "DELETE /users":
-      break;
-    case "UPDATE /users":
-      break;
+  "/users": {
+    GET: controller.user.indexUser,
+    POST: controller.user.createUser,
+  },
 
-    default:
-      break;
-  }
-}
+  "/users/:id": {
+    GET: controller.user.getUserById,
+    DELETE: controller.user.destroyUser,
+    PUT: controller.user.updateUser,
+  },
+
+  notFound: (_req, res) => helper.response(res, 400, `path not found`),
+};
+export default routes;

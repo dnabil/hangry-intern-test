@@ -1,3 +1,3 @@
-import { createUser } from "./user-controller.js";
+import * as user from "./user-controller.js";
 
-export { createUser };
+export { user };

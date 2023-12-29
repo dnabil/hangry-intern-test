@@ -1,4 +1,5 @@
 import * as helper from "./helper.js";
+import * as controller from "./controller/index.js";
 
 export default function (req, res) {
   switch (`${req.method} ${req.url}`) {
@@ -12,6 +13,7 @@ export default function (req, res) {
     case "GET /users":
       break;
     case "POST /users":
+      controller.createUser(req, res);
       break;
     case "PUT /users":
       break;
